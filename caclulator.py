@@ -1,81 +1,84 @@
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton,QVBoxLayout, QHBoxLayout, QGridLayout, QLineEdit
 
+class Calculator(QWidget):
+    def __init__(self):
+        #! App Settings ----
+        super().__init__()
+        self.setWindowTitle('Calculator')
+        self.resize(250, 500)
 
 
-#! App Settings ----
-app = QApplication([])
-main_win = QWidget()
-main_win.setWindowTitle('Calculator')
-main_win.resize(250, 500)
+        #! Properties ----
+        self.screen = QLineEdit()
+        self.clear = QPushButton('C')
+        self.delete = QPushButton('<=')
+
+        self.clear.clicked.connect(self.buttonHandler)
+        self.delete.clicked.connect(self.buttonHandler)
+        #! Design ----
+        master_layout = QVBoxLayout()
+        master_layout.addWidget(self.screen)
+        col1 = QGridLayout()
+
+        bottom_row = QHBoxLayout()
+        bottom_row.addWidget(self.clear)
+        bottom_row.addWidget(self.delete)
+
+        calc_row = QHBoxLayout()
+        calc_row.addLayout(col1)
+
+        master_layout.addLayout(calc_row)
+        master_layout.addLayout(bottom_row)
 
 
-#! Objects ----
-screen = QLineEdit()
-clear = QPushButton('C')
-delete = QPushButton('<=')
+        self.setLayout(master_layout)
 
-#! Design ----
-master_layout = QVBoxLayout()
-master_layout.addWidget(screen)
-col1 = QGridLayout()
-
-bottom_row = QHBoxLayout()
-bottom_row.addWidget(clear)
-bottom_row.addWidget(delete)
-
-calc_row = QHBoxLayout()
-calc_row.addLayout(col1)
-
-master_layout.addLayout(calc_row)
-master_layout.addLayout(bottom_row)
-
-
-main_win.setLayout(master_layout)
-
-#! Functionality ----
-def buttonHandler():
-    current = app.sender()
-    text = current.text()
-
-    match text:
-        case "=":
-            try:
-                screen.setText(str(eval(screen.text())))
-            except Exception as e:
-                print("error: ", e)
-                screen.setText("Error")
-        case "C":
-            screen.setText("")
-        case "<=":
-            screen.setText(screen.text()[:-1])
-        case _:
-            screen.setText(screen.text()+text)
-
-
-
-def buttonCreator(layout, text, row, col):
-    button = QPushButton(text)
-    button.clicked.connect(buttonHandler)
-    layout.addWidget(button, row, col)
-
-clear.clicked.connect(buttonHandler)
-delete.clicked.connect(buttonHandler)
-
-row = 3
-col = 0
-for i in range(10):
-    
-    buttonCreator(col1, str(i), row, col)
-    
-    col+=1
-    if i % 3 == 0:
-        row -= 1
-        col=0
+            
+        row = 3
+        col = 0
+        for i in range(10):
+            
+            self.buttonCreator(col1, str(i), row, col)
+            
+            col+=1
+            if i % 3 == 0:
+                row -= 1
+                col=0
     
 
-for index, value  in enumerate(['/','*','+','-','=']):
-    buttonCreator(col1, value, index, 4)
+        for index, value  in enumerate(['/','*','+','-','=']):
+            self.buttonCreator(col1, value, index, 4)
 
-#! Show/Run the App ----
-main_win.show()
-app.exec_()
+    #! Functionality ----
+    def buttonHandler(self):
+        current = self.sender()
+        text = current.text()
+
+        match text:
+            case "=":
+                try:
+                    self.screen.setText(str(eval(self.screen.text())))
+                except Exception as e:
+                    print("error: ", e)
+                    self.screen.setText("Error")
+            case "C":
+                self.screen.setText("")
+            case "<=":
+                self.screen.setText(self.screen.text()[:-1])
+            case _:
+                self.screen.setText(self.screen.text()+text)
+
+
+
+    def buttonCreator(self, layout, text, row, col):
+        button = QPushButton(text)
+        button.clicked.connect(self.buttonHandler)
+        layout.addWidget(button, row, col)
+
+
+
+if __name__ == "__main__":
+    app = QApplication([])
+    main_window = Calculator()
+    main_window.show()
+    app.exec_()
