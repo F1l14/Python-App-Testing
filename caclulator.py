@@ -1,4 +1,3 @@
-from  PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton,QVBoxLayout, QHBoxLayout, QGridLayout, QLineEdit
 
 
@@ -34,17 +33,33 @@ master_layout.addLayout(bottom_row)
 main_win.setLayout(master_layout)
 
 #! Functionality ----
-def buttonHandler(text):
-    screen.setText(screen.text() + text)
+def buttonHandler():
+    current = app.sender()
+    text = current.text()
+
+    match text:
+        case "=":
+            try:
+                screen.setText(str(eval(screen.text())))
+            except Exception as e:
+                print("error: ", e)
+                screen.setText("Error")
+        case "C":
+            screen.setText("")
+        case "<=":
+            screen.setText(screen.text()[:-1])
+        case _:
+            screen.setText(screen.text()+text)
+
+
 
 def buttonCreator(layout, text, row, col):
     button = QPushButton(text)
-    button.clicked.connect(lambda:buttonHandler(text))
+    button.clicked.connect(buttonHandler)
     layout.addWidget(button, row, col)
 
-clear.clicked.connect(lambda:screen.setText(''))
-# [:-1] removes the last character
-delete.clicked.connect(lambda:screen.setText(screen.text()[:-1]))
+clear.clicked.connect(buttonHandler)
+delete.clicked.connect(buttonHandler)
 
 row = 3
 col = 0
@@ -58,7 +73,7 @@ for i in range(10):
         col=0
     
 
-for index, value  in enumerate(['/','*','+','-']):
+for index, value  in enumerate(['/','*','+','-','=']):
     buttonCreator(col1, value, index, 4)
 
 #! Show/Run the App ----
