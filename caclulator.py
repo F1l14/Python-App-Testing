@@ -1,5 +1,6 @@
-from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton,QVBoxLayout, QHBoxLayout, QGridLayout, QLineEdit
-
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton,QVBoxLayout, QHBoxLayout, QGridLayout, QLineEdit
+from PyQt5.QtGui import QFont
+from styles import STYLE
 class Calculator(QWidget):
     def __init__(self):
         #! App Settings ----
@@ -10,9 +11,10 @@ class Calculator(QWidget):
 
         #! Properties ----
         self.screen = QLineEdit()
+        self.screen.setFont(QFont("Helvetica", 32))
         self.clear = QPushButton('C')
         self.delete = QPushButton('<=')
-
+        
         self.clear.clicked.connect(self.buttonHandler)
         self.delete.clicked.connect(self.buttonHandler)
         #! Design ----
@@ -29,14 +31,15 @@ class Calculator(QWidget):
 
         master_layout.addLayout(calc_row)
         master_layout.addLayout(bottom_row)
-
+        # css
+        master_layout.setContentsMargins(25, 25, 25, 25)
 
         self.setLayout(master_layout)
 
             
-        row = 3
+        row = 2
         col = 0
-        for i in range(10):
+        for i in range(1,10):
             
             self.buttonCreator(col1, str(i), row, col)
             
@@ -44,7 +47,8 @@ class Calculator(QWidget):
             if i % 3 == 0:
                 row -= 1
                 col=0
-    
+        self.buttonCreator(col1, "0", 3, 0, colspan=2)
+        self.buttonCreator(col1, ".", 3, 2)
 
         for index, value  in enumerate(['/','*','+','-','=']):
             self.buttonCreator(col1, value, index, 4)
@@ -70,15 +74,18 @@ class Calculator(QWidget):
 
 
 
-    def buttonCreator(self, layout, text, row, col):
+    def buttonCreator(self, layout, text, row, col, colspan=1):
         button = QPushButton(text)
         button.clicked.connect(self.buttonHandler)
-        layout.addWidget(button, row, col)
+        # button.setStyleSheet("QPushButton{ font:25pt Helvetica; padding: 0.5em;}")
+        layout.addWidget(button, row, col,1, colspan)
 
 
 
 if __name__ == "__main__":
     app = QApplication([])
     main_window = Calculator()
+    #css
+    main_window.setStyleSheet(STYLE)
     main_window.show()
     app.exec_()
