@@ -50,11 +50,12 @@ class Editor(QWidget):
         
         self.col2.addWidget(self.pictureView)
 
-        #Adjusting "Stretch", 20%
+        #Adjusting "Stretch", 20% - 80%, of the window view
         self.master_layout.addLayout(self.col1, 20)
         self.master_layout.addLayout(self.col2, 80)
         self.setLayout(self.master_layout)
 
+    #opens system dialog to choose folder , get all file names , filters and keeps the images, adds them to the list
     def openFolder(self):
         self.dirPath = QFileDialog.getExistingDirectory(None, "Select a Folder", "")
         
@@ -63,6 +64,7 @@ class Editor(QWidget):
             if file.endswith((".jpg", ".png")):
                 self.fileList.addItem(file)
 
+    # forms the full image path, hides the initial label, creates the image with the correct dimensions, shows the image
     def showImage(self):
         imagePath = path.join(self.dirPath, self.fileList.currentItem().text())
         self.pictureView.hide()
