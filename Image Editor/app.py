@@ -1,5 +1,6 @@
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QLabel,QListWidget, QComboBox, QVBoxLayout, QHBoxLayout
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QLabel,QListWidget, QComboBox, QVBoxLayout, QHBoxLayout, QFileDialog
 from PyQt5.QtCore import Qt
+from os import listdir
 class Editor(QWidget):
     def __init__(self):
         super().__init__()
@@ -19,7 +20,8 @@ class Editor(QWidget):
         self.colorB = QPushButton("Color")
         self.contrastB = QPushButton("Contrast")
         self.blurB = QPushButton("Blur")
-        col1_widgets = [self.folderB, self.fileList, self.comboB, self.leftB, self.rightB, self.mirrorB, self.sharpB, self.bwB, self.colorB, self.contrastB, self.blurB]
+        
+        self.dirPath = None
         
          #* Combo -------------------------------
         combo_items = ["Original", "Left", "Right", "Mirror", "Sharpen", "B/W", "Color", "Contrast", "Blur"]
@@ -30,12 +32,16 @@ class Editor(QWidget):
 
 
         self.pictureView = QLabel("Picture View")
+
+        #* Functionality------------------------
+        self.folderB.clicked.connect(self.openFolder)
         
         #* Design -------------------------------
         self.master_layout = QHBoxLayout()
         self.col1 = QVBoxLayout()
         self.col2 = QVBoxLayout()
 
+        col1_widgets = [self.folderB, self.fileList, self.comboB, self.leftB, self.rightB, self.mirrorB, self.sharpB, self.bwB, self.colorB, self.contrastB, self.blurB]
         for widget in col1_widgets:
             self.col1.addWidget(widget)
         
@@ -46,7 +52,13 @@ class Editor(QWidget):
         self.master_layout.addLayout(self.col2, 80)
         self.setLayout(self.master_layout)
 
-
+    def openFolder(self):
+        self.dirPath = QFileDialog.getExistingDirectory(None, "Select a Folder", "")
+        
+        files = listdir(self.dirPath)
+        for file in files:
+            if file.endswith((".jpg", ".png")):
+                self.fileList.addItem(file)
 
 
 if __name__=="__main__":
