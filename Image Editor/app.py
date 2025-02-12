@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QLabel,QListWidget, QComboBox, QVBoxLayout, QHBoxLayout, QFileDialog
 from PyQt5.QtCore import Qt
-from os import listdir
+from PyQt5.QtGui import QPixmap
+from os import listdir, path
 class Editor(QWidget):
     def __init__(self):
         super().__init__()
@@ -32,9 +33,11 @@ class Editor(QWidget):
 
 
         self.pictureView = QLabel("Picture View")
+        self.pictureView.setAlignment(Qt.AlignCenter)
 
         #* Functionality------------------------
         self.folderB.clicked.connect(self.openFolder)
+        self.fileList.itemSelectionChanged.connect(self.showImage)
         
         #* Design -------------------------------
         self.master_layout = QHBoxLayout()
@@ -59,6 +62,14 @@ class Editor(QWidget):
         for file in files:
             if file.endswith((".jpg", ".png")):
                 self.fileList.addItem(file)
+
+    def showImage(self):
+        imagePath = path.join(self.dirPath, self.fileList.currentItem().text())
+        self.pictureView.hide()
+        image = QPixmap(imagePath).scaled(self.pictureView.width(), self.pictureView.height(), Qt.KeepAspectRatio)
+        
+        self.pictureView.setPixmap(image)
+        self.pictureView.show()
 
 
 if __name__=="__main__":
