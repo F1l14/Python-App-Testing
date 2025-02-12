@@ -21,6 +21,8 @@ class Editor(QWidget):
         self.colorB = QPushButton("Color")
         self.contrastB = QPushButton("Contrast")
         self.blurB = QPushButton("Blur")
+        self.saveB = QPushButton("Save")
+        self.saveB.setDisabled(True)
         
         self.dirPath = None
         
@@ -44,7 +46,7 @@ class Editor(QWidget):
         self.col1 = QVBoxLayout()
         self.col2 = QVBoxLayout()
 
-        col1_widgets = [self.folderB, self.fileList, self.comboB, self.leftB, self.rightB, self.mirrorB, self.sharpB, self.bwB, self.colorB, self.contrastB, self.blurB]
+        col1_widgets = [self.folderB, self.fileList, self.comboB, self.leftB, self.rightB, self.mirrorB, self.sharpB, self.bwB, self.colorB, self.contrastB, self.blurB, self.saveB]
         for widget in col1_widgets:
             self.col1.addWidget(widget)
         
@@ -58,11 +60,11 @@ class Editor(QWidget):
     #opens system dialog to choose folder , get all file names , filters and keeps the images, adds them to the list
     def openFolder(self):
         self.dirPath = QFileDialog.getExistingDirectory(None, "Select a Folder", "")
-        
-        files = listdir(self.dirPath)
-        for file in files:
-            if file.endswith((".jpg", ".png")):
-                self.fileList.addItem(file)
+        if self.dirPath !="":
+            files = listdir(self.dirPath)
+            for file in files:
+                if file.endswith((".jpg", ".png")):
+                    self.fileList.addItem(file)
 
     # forms the full image path, hides the initial label, creates the image with the correct dimensions, shows the image
     def showImage(self):
@@ -73,6 +75,7 @@ class Editor(QWidget):
         self.pictureView.setPixmap(image)
         self.pictureView.show()
 
+        self.saveB.setDisabled(False)
 
 if __name__=="__main__":
     app = QApplication([])
