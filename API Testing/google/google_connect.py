@@ -10,6 +10,31 @@ from googleapiclient.errors import HttpError
 SCOPES = ["https://www.googleapis.com/auth/drive.file"]
 
 
+def createFolder(service):
+  file_metadata = {
+        "name": "tesing folder",
+        "mimeType": "application/vnd.google-apps.folder",
+    }
+  
+  file = service.files().create(body=file_metadata, fields="id").execute()
+  return file["id"]
+
+def shareFolder(service, folder_id, email):
+  permission = {
+            'type': 'user',
+            'role': 'reader',  # or 'writer' if you want to give edit access
+            'emailAddress': email
+        }
+
+  # Share the folder
+  service.permissions().create(
+      fileId=folder_id,
+      body=permission,
+      sendNotificationEmail=True  # Optional: Send notification email to the user
+  ).execute()
+
+  print(f"Folder shared with {email} successfully!")
+
 def main():
   """Shows basic usage of the Drive v3 API.
   Prints the names and ids of the first 10 files the user has access to.
@@ -35,12 +60,16 @@ def main():
 
   try:
     service = build("drive", "v3", credentials=creds)
+    folder_id = createFolder(service)
+    shareFolder(service, folder_id, "EMAIL")
 
-    file_metadata = {
-        "name": "tesing folder",
-        "mimeType": "application/vnd.google-apps.folder",
-    }
-    file = service.files().create(body=file_metadata, fields="id").execute()
+
+
+
+
+
+
+
     # Call the Drive v3 API
     # results = (
     #     service.files()
