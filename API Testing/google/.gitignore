@@ -1,2 +1,7 @@
+<<<<<<< HEAD
 *.json
 __pycache__/
+=======
+credentials.json
+__pycache__/
+>>>>>>> 73e39b4 (google drive api testing)
